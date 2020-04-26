@@ -8,6 +8,7 @@ public class Knight extends Piece {
     public Knight(Coordinate p, Boolean white) {
         super(p, white);
     }
+
     @Override
     public ArrayList<Coordinate> Moves(Board[][] b) {
         ArrayList<Coordinate> openMoves = new ArrayList<>();

@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             board[6][1].setPiece(bPawn7);
             board[7][1].setPiece(bPawn8);
 
-            /*150 lines of displaying the board on the screen
+            /*
             DisplayBoard[][] displays the piece that is on a particular board
             location and
             DisplayBoardBackground[][] displays the tile that is underneath.
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-            anythingSelected = false;
+            pieceSelected = false;
             firstPlayerTurn= true;
             drawPieces();
     }
@@ -389,6 +389,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         //this sets the clickedPosition as a Coordinate object of the clicked position
+        //I cant think of a better way to do this.  There might be though
         switch (v.getId()) {
             case R.id.R00:
                 clickedPosition.setX(0);
@@ -699,6 +700,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //if clicked piece is the same color as selected piece
             } else if(pClicked.getWhite() == firstPlayerTurn){
                 pSelect = pClicked;
+                allowedMoves = pSelect.Moves(board);
+                currentPosition = clickedPosition;
             }
         }
     }

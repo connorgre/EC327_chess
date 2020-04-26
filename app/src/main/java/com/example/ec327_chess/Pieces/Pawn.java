@@ -17,17 +17,34 @@ public class Pawn extends Piece {
         int x = position.getX();
         int y = position.getY();
 
-        if((!hasMoved) && b[x][y+2].getPiece() == null){
-            openMoves.add(new Coordinate(x,y+2));
-        }
-        if(b[x][y+1].getPiece() == null){
-            openMoves.add(new Coordinate(x,y+1));
-        }
-        if(b[x+1][y+1].getPiece().getWhite() != white){
-            openMoves.add(new Coordinate(x+1,y+1));
-        }
-        if(b[x-1][y+1].getPiece().getWhite() != white){
-            openMoves.add(new Coordinate(x-1,y+1));
+        //could add en passant but I'm not even 100% sure how that works
+        //would also need to add a whole new previous board variable to do
+        if(white) {
+            if ((!hasMoved) && b[x][y + 2].getPiece() == null) {
+                openMoves.add(new Coordinate(x, y + 2));
+            }
+            if (b[x][y + 1].getPiece() == null) {
+                openMoves.add(new Coordinate(x, y + 1));
+            }
+            if (b[x + 1][y + 1].getPiece().getWhite() != white) {
+                openMoves.add(new Coordinate(x + 1, y + 1));
+            }
+            if (b[x - 1][y + 1].getPiece().getWhite() != white) {
+                openMoves.add(new Coordinate(x - 1, y + 1));
+            }
+        }else{
+            if ((!hasMoved) && b[x][y - 2].getPiece() == null) {
+                openMoves.add(new Coordinate(x, y - 2));
+            }
+            if (b[x][y - 1].getPiece() == null) {
+                openMoves.add(new Coordinate(x, y - 1));
+            }
+            if (b[x + 1][y - 1].getPiece().getWhite() != white) {
+                openMoves.add(new Coordinate(x + 1, y - 1));
+            }
+            if (b[x - 1][y - 1].getPiece().getWhite() != white) {
+                openMoves.add(new Coordinate(x - 1, y - 1));
+            }
         }
         return openMoves;
     }
