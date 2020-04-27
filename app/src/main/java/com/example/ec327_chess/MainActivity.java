@@ -699,7 +699,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     board[clickedPosition.getX()][clickedPosition.getY()].setPiece(pSelect);
                     board[currentPosition.getX()][currentPosition.getY()].setPiece(null);
-                    pClicked.setPosition(new Coordinate(clickedPosition.getX(),clickedPosition.getY()))
+                    pClicked.setPosition(new Coordinate(clickedPosition.getX(),clickedPosition.getY()));
                     pieceSelected = false;
                     firstPlayerTurn = !firstPlayerTurn;
                 }
