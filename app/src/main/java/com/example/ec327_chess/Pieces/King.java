@@ -6,6 +6,11 @@ import com.example.ec327_chess.Board;
 public class King extends Piece {
     public King(Coordinate p, Boolean white) {
         super(p, white);
+        if(white){
+            value = 4;
+        }else{
+            value = -4;
+        }
     }
 @Override
     public ArrayList<Coordinate> Moves(Board[][] b){

@@ -8,6 +8,11 @@ public class Rook extends Piece {
 
     public Rook(Coordinate c, Boolean white){
         super(c,white);
+        if(white){
+            value = 5;
+        }else{
+            value = -5;
+        }
     }
 
     //checks for open spots to move to

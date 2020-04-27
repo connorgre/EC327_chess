@@ -8,6 +8,11 @@ import java.util.ArrayList;
 public class Queen extends Piece {
     public Queen(Coordinate p, Boolean white) {
         super(p, white);
+        if(white){
+            value = 10;
+        }else{
+            value = -10;
+        }
     }
 
     //Just combining the openMove statements for the rook and Bishop

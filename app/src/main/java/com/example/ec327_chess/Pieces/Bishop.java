@@ -8,6 +8,11 @@ import java.util.ArrayList;
 public class Bishop extends Piece {
     public Bishop(Coordinate p, Boolean white) {
         super(p, white);
+        if(white){
+            value = 3;
+        }else{
+            value = -3;
+        }
     }
 
     //goes through coordinates diagonally until it reaches an occupied square

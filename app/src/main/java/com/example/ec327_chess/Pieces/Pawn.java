@@ -9,6 +9,11 @@ public class Pawn extends Piece {
     private boolean hasMoved;
     public Pawn(Coordinate p, Boolean white) {
         super(p, white);
+        if(white){
+            value = 1;
+        } else{
+            value = -1;
+    }
         hasMoved = false;
     }
 @Override
