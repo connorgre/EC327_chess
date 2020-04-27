@@ -20,7 +20,7 @@ public class Piece {
 
     public Boolean getWhite(){return white;}
 
-    void setPosition(Coordinate p){
+    public void setPosition(Coordinate p){
         this.position = p;
     }
 
@@ -30,7 +30,7 @@ public class Piece {
         return openMoves;
     }
 
-    Coordinate getPosition(){
+    public Coordinate getPosition(){
         return position;
     }
 }

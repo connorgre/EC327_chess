@@ -3,7 +3,7 @@ package com.example.ec327_chess;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
-//literally no idea what this does...
+//literally no idea what this does, internet said to have it but idrk...
 //import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public Coordinate clickedPosition = new Coordinate(0,0);
     public Coordinate currentPosition = new Coordinate(0,0);
     public ArrayList<Coordinate> allowedMoves;
+    public Boolean bKingCheck;
+    public Boolean wKingCheck;
 
     //different because a clicked spot might be invalid, and it requires a valid click after
     //selecting a piece to make a move, so we don't want to change that.
@@ -331,6 +333,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             pieceSelected = false;
             firstPlayerTurn= true;
+            wKingCheck = false;
+            bKingCheck = false;
             drawPieces();
     }
 
@@ -704,7 +708,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentPosition = clickedPosition;
             }
         }
+        drawPieces();
     }
+
+    public void checkEndGame(){
+        wKingCheck = false;
+        bKingCheck = false;
+        for(int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; j++){
+                if(board[i][j].getPiece() instanceof King){
+                    if (board[i][j].getPiece().getWhite()){
+                        wKingCheck = true;
+                        }
+                    if (board[i][j].getPiece().getWhite()){
+                        bKingCheck = true;
+                        }
+                    }
+                }
+            }
+        }
 
     private Boolean isMoveAllowed(ArrayList<Coordinate> list, Coordinate c) {
         Boolean Allowed = false;
@@ -716,6 +738,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return Allowed;
     }
+
+
 
 
 }
