@@ -7,6 +7,11 @@ import java.util.ArrayList;
 public class Knight extends Piece {
     public Knight(Coordinate p, Boolean white) {
         super(p, white);
+        if(white){
+            value = 3;
+        } else{
+            value = -3;
+        }
     }
 
     @Override

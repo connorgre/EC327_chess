@@ -11,11 +11,13 @@ public class Piece {
     //for color, white = true, black = false;
     protected boolean white;
     protected Coordinate position;
+    protected int value;
 
 
     public Piece(Coordinate p, boolean white){
         this.white = white;
         this.position = p;
+        this.value = 0;
     }
 
     public Boolean getWhite(){return white;}
@@ -32,5 +34,8 @@ public class Piece {
 
     public Coordinate getPosition(){
         return position;
+    }
+    public int getValue(){
+        return value;
     }
 }
