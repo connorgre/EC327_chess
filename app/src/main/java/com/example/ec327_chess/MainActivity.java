@@ -708,6 +708,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentPosition = clickedPosition;
             }
         }
+        if (castleMove(board, capture, xfrom, yfrom, xto, yto)) {
+            int kDest, rDest;
+            boolean fromKing;
+            if (from instanceof King) {
+                fromKing = true;
+                kDest = (xto == 7) ? 6 : 2;
+                rDest = (xto == 7) ? 5 : 3;
+            } else {
+                fromKing = false;
+                kDest = (xfrom == 7) ? 6 : 2;
+                rDest = (xfrom == 7) ? 5 : 3;
+            }
+
+            board[yfrom][xfrom] = null;
+            board[yto][xto] = null;
+
+            board[yfrom][kDest] = (fromKing) ? from : to;
+            board[yto][rDest] = (fromKing) ? to : from;
+
+            endTurn(board, from, to, true);
+            return true;
+
+        }if (castleMove(board, capture, xfrom, yfrom, xto, yto)) {
+            int kDest, rDest;
+            boolean fromKing;
+            if (from instanceof King) {
+                fromKing = true;
+                kDest = (xto == 7) ? 6 : 2;
+                rDest = (xto == 7) ? 5 : 3;
+            } else {
+                fromKing = false;
+                kDest = (xfrom == 7) ? 6 : 2;
+                rDest = (xfrom == 7) ? 5 : 3;
+            }
+
+            board[yfrom][xfrom] = null;
+            board[yto][xto] = null;
+
+            board[yfrom][kDest] = (fromKing) ? from : to;
+            board[yto][rDest] = (fromKing) ? to : from;
+
+            endTurn(board, from, to, true);
+            return true;
+
+        }
         drawPieces();
     }
 
@@ -727,6 +772,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+
+
+    private static boolean castleMove(Piece[][] board, boolean capture, int xfrom, int yfrom, int xto, int yto) {
+        Piece from = board[yfrom][xfrom];
+        Piece to = board[yto][xto];
+
+        return (from != null && to != null &&
+                correctTurn(from.white) &&								// A valid castle move:
+                from.white == to.white &&								// From and to are same color,
+                (from instanceof King && to instanceof Rook || 			// a king and rook are switching,
+                        from instanceof Rook && to instanceof King) &&
+                from.firstMove && to.firstMove &&						// it is both pieces' first move,
+                notBlocked(board, xfrom, yfrom, xto, yto));				// and there is nothing blocking them.
+    }
+
+    private static boolean correctTurn(boolean white) {
+        // Testing flag turns off correctTurn validations
+        return (testing) ? true : white == firstPlayerTurn
+    }
+    private static boolean notBlocked(Piece[][] board, int xfrom, int yfrom, int xto, int yto) {
+
+
+        Piece from = board[yfrom][xfrom];
+        Piece to = board[yto][xto];
+
+        int dx = (xfrom < xto) ? 1 : ((xfrom == xto) ? 0 : -1);
+        int dy = (yfrom < yto) ? 1 : ((yfrom == yto) ? 0 : -1);
+
+        int steps = Math.max(Math.abs(xfrom - xto), Math.abs(yfrom - yto));
+
+        if (xfrom == xto || yfrom == yto || Math.abs(xfrom - xto) == Math.abs(yfrom - yto)) {
+            for (int i = 1; i < steps; i++) {
+                int x = xfrom + i * dx;
+                int y = yfrom + i * dy;
+                if (isBlocked(board, from, to, x, y)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 
     private Boolean isMoveAllowed(ArrayList<Coordinate> list, Coordinate c) {
         Boolean Allowed = false;
