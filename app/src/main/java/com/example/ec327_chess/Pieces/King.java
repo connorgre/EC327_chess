@@ -15,11 +15,12 @@ public class King extends Piece {
     public King(King k){
         super(k);
         if(white){
-            value = 50;
+            value = 100;
         }else{
-            value = -50;
+            value = -100;
         }
     }
+
     @Override
     public King clone() {
         return new King(this);

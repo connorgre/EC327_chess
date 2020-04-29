@@ -7,9 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.ec327_chess.Pieces.*;
 import com.example.ec327_chess.chess_Ai;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import android.os.Handler;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public TextView[][] DisplayBoardBackground = new TextView[8][8];
     public Coordinate clickedPosition = new Coordinate(0,0);
     public Coordinate currentPosition = new Coordinate(0,0);
+    public Coordinate engineClickedPosition = new Coordinate(0,0);
+    public Coordinate engineCurrentPosition = new Coordinate(0,0);
     public ArrayList<Coordinate> allowedMoves;
     public Boolean bKingCheck;
     public Boolean wKingCheck;
@@ -666,28 +668,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //I tried just assigning board[clickedPosition.getX()][clickedPosition.getY()].getPiece() to a variable
         //but the code breaks, so the result is board[clickedPosition.getX()][clickedPosition.getY()].getPiece()
         //gets pasted alot.  not much I can do about that
-        if(mode > -1){
-            if(!firstPlayerTurn){
-                chess_Ai engine = new chess_Ai(mode,board);
-                currentPosition = new Coordinate(engine.getBestP(board));
-                clickedPosition = new Coordinate(engine.getBestMove());
-
-                    DisplayBoardBackground[clickedPosition.getX()][clickedPosition.getY()].setBackgroundResource(R.color.colorCheck);
-
-                allowedMoves = board[currentPosition.getX()][currentPosition.getY()].getPiece().Moves(board);
-                while(!isMoveAllowed(allowedMoves,clickedPosition)){
-                    currentPosition = new Coordinate(engine.getBestP(board));
-                    clickedPosition = new Coordinate(engine.getBestMove());
-                }
-                setColorAtAllowedPosition(allowedMoves);
-                checkCheck();
-                pieceSelected = true;
-            }
-        }
 
         if(!pieceSelected){
             if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null){
-                checkCheck();
                 return;
             }else if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece().getWhite() == firstPlayerTurn){
                 currentPosition = new Coordinate(clickedPosition.getX(),clickedPosition.getY());
@@ -695,9 +678,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 allowedMoves = board[currentPosition.getX()][currentPosition.getY()].getPiece().Moves(board);
                 resetColorAtAllowedPosition(allowedMoves);
                 setColorAtAllowedPosition(allowedMoves);
-                checkCheck();
+                return;
             }
         } else {
+            if(mode >= 0 && !firstPlayerTurn){
+                currentPosition = engineCurrentPosition;
+                clickedPosition = engineClickedPosition;
+            }
             //if clicked piece is blank
             if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null){
                 if(isMoveAllowed(allowedMoves,clickedPosition)){
@@ -705,33 +692,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     board[currentPosition.getX()][currentPosition.getY()].setPiece(null);
                     board[clickedPosition.getX()][clickedPosition.getY()].getPiece().setPosition(new Coordinate(clickedPosition.getX(),clickedPosition.getY()));
                     board[clickedPosition.getX()][clickedPosition.getY()].getPiece().setHasMoved();
-
-                    resetColorAtAllowedPosition(allowedMoves);
-                    checkCheck();
-                    pieceSelected = false;
-                    firstPlayerTurn = !firstPlayerTurn;
-                    drawPieces();
                 }
                 //if clicked piece is the opposite color of selected piece
             } else if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece().getWhite() == !firstPlayerTurn){
                 if(isMoveAllowed(allowedMoves,clickedPosition)){
-                   if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece() instanceof King){
-                        /////////////////////////////////////////////////////////////////
-                        /////////////////////////////////////////////////////////////////
-                        //GAME OVER - need to add screen and methods for this
-                        /////////////////////////////////////////////////////////////////
-                        /////////////////////////////////////////////////////////////////
-                       drawPieces();
-                    }
-
                     board[clickedPosition.getX()][clickedPosition.getY()].setPiece(board[currentPosition.getX()][currentPosition.getY()].getPiece());
                     board[currentPosition.getX()][currentPosition.getY()].setPiece(null);
                     board[clickedPosition.getX()][clickedPosition.getY()].getPiece().setPosition(new Coordinate(clickedPosition.getX(),clickedPosition.getY()));
-                    resetColorAtAllowedPosition(allowedMoves);
-
-                    checkCheck();
-                    pieceSelected = false;
-                    firstPlayerTurn = !firstPlayerTurn;
                 }
                 //if clicked piece is the same color as selected piece
             } else if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece().getWhite() == firstPlayerTurn){
@@ -739,13 +706,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentPosition = new Coordinate(clickedPosition.getX(),clickedPosition.getY());
                 allowedMoves = board[currentPosition.getX()][currentPosition.getY()].getPiece().Moves(board);
                 setColorAtAllowedPosition(allowedMoves);
-                checkCheck();
+                return;
             }
         }
+
+        resetColorAtAllowedPosition(allowedMoves);
+        pieceSelected = false;
+        firstPlayerTurn = !firstPlayerTurn;
         checkEndGame();
         checkCheck();
         drawPieces();
-    }}
+
+        //implementation of the engine
+        if(mode > -1){
+            if(!firstPlayerTurn && !checkEndGame()){
+                chess_Ai engine = new chess_Ai(mode,board);
+                engineCurrentPosition = new Coordinate(engine.getBestP(board));
+                engineClickedPosition = new Coordinate(engine.getBestMove());
+                allowedMoves = board[engineCurrentPosition.getX()][engineCurrentPosition.getY()].getPiece().Moves(board);
+                while(!isMoveAllowed(allowedMoves,engineClickedPosition)){
+                    engineCurrentPosition = new Coordinate(engine.getBestP(board));
+                    engineClickedPosition = new Coordinate(engine.getBestMove());
+                }
+                pieceSelected = true;
+            }
+        }
+    }
+    }
 
     public void checkCheck(){
         wKingCheck = false;
@@ -821,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void checkEndGame(){
+    public boolean checkEndGame(){
         ArrayList<Piece> whitePieces = new ArrayList<>();
         ArrayList<Piece> blackPieces = new ArrayList<>();
         Boolean bKingAlive = false;
@@ -842,7 +829,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(!wKingAlive || !bKingAlive){
             gameOver.setVisibility(View.VISIBLE);
+            return true;
         }
+        return false;
     }
 
 
@@ -863,8 +852,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mode = 1;
         }else if(x == R.id.level_2){
             mode = 2;
+        }else if(x == R.id.level_3){
+            mode = 3;
         }
         modeSelect.setVisibility(View.INVISIBLE);
+    }
+    public void restart(View v){
+        initializeboard();
     }
 }
 
