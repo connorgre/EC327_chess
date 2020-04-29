@@ -1,0 +1,2 @@
+rootProject.name='EC327_chess'
+include ':app'
