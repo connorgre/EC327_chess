@@ -201,7 +201,7 @@ public class chess_Ai {
             }
         }
 
-        if(depth == 0 || ){
+        if(depth == 0){
             return getTotalValue(b);
         }
 
