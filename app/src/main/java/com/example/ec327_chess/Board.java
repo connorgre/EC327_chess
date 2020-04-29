@@ -16,7 +16,12 @@ public class Board {
     public Piece getPiece(){
         return p;
     }
-    void setPiece(Piece piece){
+
+    public void setPiece(Piece piece){
         this.p = piece;
+    }
+
+    public void setPieceAi(Piece piece){
+        this.p = new Piece(piece);
     }
 }

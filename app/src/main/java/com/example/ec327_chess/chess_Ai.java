@@ -13,40 +13,44 @@ import java.lang.Math;
 
 public class chess_Ai {
     
-    private Piece bestP;
-    private Coordinate bestMove;
-    private int totalValue;
-    private ArrayList<Piece> blackPieces;
-    private ArrayList<Piece> whitePieces;
-    private int level;
+    protected Coordinate bestP;
+    protected Coordinate bestMove;
+    protected int totalValue;
+    protected ArrayList<Piece> blackPieces;
+    protected ArrayList<Piece> whitePieces;
+    protected int level;
+    protected ArrayList<Coordinate> previousMoves;
 
-    public chess_Ai(int level, Board[][] b){
-        bestP = null;
+    public chess_Ai(int level, Board[][] board){
+        bestP = new Coordinate(0,0);
         bestMove = new Coordinate(0,0);
         totalValue = 0;
-        blackPieces = getBlackPieces(b);
-        whitePieces = getWhitePieces(b);
+        blackPieces = getBlackPieces(board);
+        whitePieces = getWhitePieces(board);
         this.level = level;
     }
 
-    public Piece getBestP(Board[][] b){
+    public Coordinate getBestP(Board[][] b){
         Random rand = new Random();
         blackPieces = getBlackPieces(b);
         whitePieces = getWhitePieces(b);
         totalValue = getTotalValue(b);
 
-        Piece bestP = blackPieces.get(rand.nextInt(blackPieces.size()));
-        bestMove.setX(bestP.Moves(b).get(rand.nextInt(bestP.Moves(b).size())).getX());
-        bestMove.setY(bestP.Moves(b).get(rand.nextInt(bestP.Moves(b).size())).getY());
+        int alpha = -10000;
+        int beta = 10000;
 
-        int alpha = 1000;
-        int beta = -1000;
-
-        //plays completely randomly
+        //plays completely randomly at level 0
         if(level == 0){
-            bestP = blackPieces.get(rand.nextInt(blackPieces.size()));
-            bestMove.setX(bestP.Moves(b).get(rand.nextInt(bestP.Moves(b).size())).getX());
-            bestMove.setY(bestP.Moves(b).get(rand.nextInt(bestP.Moves(b).size())).getY());
+            int randInt = rand.nextInt(blackPieces.size());
+            bestP = new Coordinate(blackPieces.get(randInt).getPosition());
+
+            while(b[bestP.getX()][bestP.getY()].getPiece().Moves(b).size() <= 0){
+                randInt = rand.nextInt(blackPieces.size());
+                bestP = new Coordinate(blackPieces.get(randInt).getPosition());
+            }
+
+            randInt = rand.nextInt(b[bestP.getX()][bestP.getY()].getPiece().Moves(b).size());
+            bestMove = new Coordinate(b[bestP.getX()][bestP.getY()].getPiece().Moves(b).get(randInt));
         } else {
             int d = level*2-1;
             minimax(b,d,alpha,beta,false);
@@ -134,26 +138,23 @@ public class chess_Ai {
         int tempTotal = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                Piece p = b[i][j].getPiece();
-                if(p != null) {
-                    int midAdd = 0;
-                    //midAdd gives extra weight for advancing pieces up the board
-
-                    if(p.getWhite()){
-                        if(j == 2){
-                            midAdd = 1;
-                        }else if(j >2){
-                            midAdd = 2;
+                if(b[i][j].getPiece() != null){
+                        int midAdd = 0;
+                        //midAdd gives extra weight for advancing pieces up the board
+                        if(b[i][j].getPiece().getWhite()){
+                            if(j == 5){
+                                midAdd = 1;
+                            }else if(j < 5){
+                                midAdd = 2;
+                            }
+                        }else {
+                            if(j == 2){
+                                midAdd = -1;
+                            }else if(j > 2){
+                                midAdd = -2;
+                            }
                         }
-                    }else {
-                        if(j == 5){
-                            midAdd = -1;
-                        }else if(j < 5){
-                            midAdd = -2;
-                        }
-                    }
-
-                    tempTotal += b[i][j].getPiece().getValue() + midAdd;
+                        tempTotal += b[i][j].getPiece().getValue() + midAdd;
                 }
             }
         }
@@ -161,103 +162,150 @@ public class chess_Ai {
     }
 
     public ArrayList<Piece> getBlackPieces(Board[][] b) {
-        blackPieces.clear();
+        ArrayList<Piece>tempPieces = new ArrayList<>();
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(b[i][j] != null) {
+                if(b[i][j].getPiece() != null) {
                     if (!b[i][j].getPiece().getWhite()) {
-                        blackPieces.add(b[i][j].getPiece());
+                        tempPieces.add(b[i][j].getPiece());
                     }
                 }
             }
         }
-        return blackPieces;
+        return tempPieces;
     }
 
     public ArrayList<Piece> getWhitePieces(Board[][] b) {
-        whitePieces.clear();
+        ArrayList<Piece> tempPieces = new ArrayList<>();
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if(b[i][j] != null) {
+                if(b[i][j].getPiece() != null) {
                     if (b[i][j].getPiece().getWhite()) {
-                        whitePieces.add(b[i][j].getPiece());
+                        tempPieces.add(b[i][j].getPiece());
                     }
                 }
             }
         }
-        return whitePieces;
+        return tempPieces;
     }
 
     public int minimax(Board[][] b, int depth, int alpha, int beta, Boolean white){
-        ArrayList<Piece> bPieces;
-        ArrayList<Piece> wPieces;
-        ArrayList<Coordinate> moves;
-        int eval;
+        Board[][] newB = new Board[8][8];
 
-        if(depth == 0){
+        for(int i = 0; i< 8 ; i++){
+            for(int j = 0; j < 8; j++){
+                newB[i][j] = new Board(null);
+                if(b[i][j].getPiece() != null){
+                    newB[i][j].setPiece(b[i][j].getPiece().clone());
+                }
+            }
+        }
+
+        if(depth == 0 || ){
             return getTotalValue(b);
         }
+
         if(white){
-            int maxEval = -100;
-            wPieces = getWhitePieces(b);
+            ArrayList<Piece> wPieces = getBlackPieces(newB);
+            int eval;
+            int maxEval = 1000;
             for(Piece p:wPieces){
-                moves = p.Moves(b);
-                for (Coordinate coord:moves) {
-                    if(b[coord.getX()][coord.getY()].getPiece() instanceof King){
-                        beta = -1000;
-                    }
-                    b[p.getPosition().getX()][p.getPosition().getY()].setPiece(null);
-                    p.setPosition(coord);
-                    b[coord.getX()][coord.getY()].setPiece(p);
-
-                    eval = minimax(b,depth -1,alpha,beta,false);
-                    maxEval = Math.max(eval,maxEval);
-
-                    alpha = Math.max(eval,alpha);
+                if(beta <= alpha){
+                    break;
+                }
+                for(Coordinate coord:p.Moves(newB)){
                     if(beta <= alpha){
                         break;
                     }
-                }
-                if(beta <= alpha){
-                    break;
+                    Coordinate c = new Coordinate(coord);
+                    Piece oldP = p.clone();
+                    Piece nextP;
+                    if(newB[coord.getX()][coord.getY()].getPiece() != null) {
+                        nextP = newB[c.getX()][c.getY()].getPiece().clone();
+                    }else{
+                        nextP = null;
+                    }
+                    Coordinate old = new Coordinate(oldP.getPosition());
+
+                    newB[coord.getX()][coord.getY()].setPiece(oldP.clone());
+                    newB[coord.getX()][coord.getY()].getPiece().setPosition(new Coordinate(coord));
+                    newB[old.getX()][old.getY()].setPiece(null);
+
+                    eval = minimax(newB,depth - 1,alpha,beta,true);
+
+                    maxEval = Math.max(maxEval,eval);
+                    alpha = Math.max(maxEval,alpha);
+
+                    if(nextP != null) {
+                        newB[coord.getX()][coord.getY()].setPiece(nextP.clone());
+                    }else{
+                        newB[coord.getX()][coord.getY()].setPiece(null);
+                    }
+                    newB[old.getX()][old.getY()].setPiece(oldP.clone());
+                    newB[old.getX()][old.getY()].getPiece().setPosition(new Coordinate(p.getPosition()));
                 }
             }
             return maxEval;
         }else{
-            int minEval = 100;
-            bPieces = getBlackPieces(b);
-
+            ArrayList<Piece> bPieces = getBlackPieces(newB);
+            int eval;
+            int minEval = 1000;
             for(Piece p:bPieces){
-                moves = p.Moves(b);
-
-                for (Coordinate coord:moves) {
-                    if(b[coord.getX()][coord.getY()].getPiece() instanceof King){
-                        beta = -1000;
-                    }
-
-                    b[p.getPosition().getX()][p.getPosition().getY()].setPiece(null);
-                    p.setPosition(coord);
-                    b[coord.getX()][coord.getY()].setPiece(p);
-
-                    eval = minimax(b,depth -1,alpha,beta,false);
-                    minEval = Math.min(eval,minEval);
-
-                    if(eval < beta){
-                        bestP = p;
-                        bestMove.setY(coord.getY());
-                        bestMove.setX(coord.getX());
-                        beta = eval;
-                    }
-
-                    if(beta <= alpha){
-                        break;
-                    }
-                }
                 if(beta <= alpha){
                     break;
                 }
+                for(Coordinate coord:p.Moves(newB)){
+                    if(beta <= alpha){
+                        break;
+                    }
+                    Coordinate c = new Coordinate(coord);
+                    Piece oldP = p.clone();
+                    Piece nextP;
+                    if(newB[coord.getX()][coord.getY()].getPiece() != null) {
+                        nextP = newB[c.getX()][c.getY()].getPiece().clone();
+                    }else{
+                        nextP = null;
+                    }
+                    Coordinate old = new Coordinate(oldP.getPosition());
+
+                    newB[coord.getX()][coord.getY()].setPiece(oldP.clone());
+                    newB[coord.getX()][coord.getY()].getPiece().setPosition(new Coordinate(coord));
+                    newB[old.getX()][old.getY()].setPiece(null);
+
+                    eval = minimax(newB,depth - 1,alpha,beta,true);
+
+                    if(eval <= minEval){
+                        Random rand = new Random();
+                        if(eval == minEval) {
+                            if (rand.nextBoolean()) {
+                                if (depth == level * 2 - 1) {
+                                    bestP = new Coordinate(old);
+                                    bestMove = new Coordinate(coord);
+                                }
+                                minEval = eval;
+                            }
+                        }else{
+                            if (depth == level * 2 - 1) {
+                                bestP = new Coordinate(old);
+                                bestMove = new Coordinate(coord);
+                            }
+                            minEval = eval;
+                        }
+                    }
+                    if(minEval <= beta){
+                        beta = minEval;
+                    }
+
+                    if(nextP != null) {
+                        newB[coord.getX()][coord.getY()].setPiece(nextP.clone());
+                    }else{
+                        newB[coord.getX()][coord.getY()].setPiece(null);
+                    }
+                    newB[old.getX()][old.getY()].setPiece(oldP.clone());
+                    newB[old.getX()][old.getY()].getPiece().setPosition(new Coordinate(p.getPosition()));
+                }
             }
-        return minEval;
+            return minEval;
         }
     }
 }

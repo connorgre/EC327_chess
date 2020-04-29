@@ -14,52 +14,73 @@ public class Bishop extends Piece {
             value = -3;
         }
     }
+    @Override
+    public Bishop clone() {
+        return new Bishop(this);
+    }
+
+    public Bishop(Bishop b){
+        super(b);
+        if(white){
+            value = 3;
+        }else{
+            value = -3;
+        }
+    }
 
     //goes through coordinates diagonally until it reaches an occupied square
     //continues one more if the square is the other team
     @Override
     public ArrayList<Coordinate> Moves(Board[][] b) {
         ArrayList<Coordinate> openMoves = new ArrayList<>();
-        Coordinate openC;
-        for(int i = 1; i < (Math.min(8-position.getX(),8-position.getY())); i++){
-            if(b[position.getX()+i][position.getY()+i] == null){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-            }else if(b[position.getX()+i][position.getY()+i].getPiece().getWhite() != white){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-                break;
-                }
-        }
+        openMoves.clear();
 
-        for(int i = 1; i < (Math.min(position.getX(),position.getY())+1); i++){
-            if(b[position.getX()-i][position.getY()-i] == null){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-            }else if(b[position.getX()+i][position.getY()+i].getPiece().getWhite() != white){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-                break;
+        for(int i = 1; i < 8; i++){
+            if(position.getX() + i <= 7 && position.getY() + i <= 7) {
+                if (b[position.getX() + i][position.getY() + i].getPiece() == null) {
+                    openMoves.add(new Coordinate(position.getX() + i, position.getY() + i));
+                } else if (b[position.getX() + i][position.getY() + i].getPiece().getWhite() != white) {
+                    openMoves.add(new Coordinate(position.getX() + i, position.getY() + i));
+                    break;
+                } else if (b[position.getX() + i][position.getY() + i].getPiece().getWhite() == white) {
+                    break;
+                }
             }
         }
-        for(int i = 1; i < (Math.min(8-position.getX(),position.getY()+1)); i++){
-            if(b[position.getX()+i][position.getY()-i] == null){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-            }else if(b[position.getX()+i][position.getY()+i].getPiece().getWhite() != white){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-                break;
+        for(int i = 1; i < 8; i++){
+            if(position.getX() - i >= 0 && position.getY() -i >= 0) {
+                if (b[position.getX() - i][position.getY() - i].getPiece() == null) {
+                    openMoves.add(new Coordinate(position.getX() - i, position.getY() - i));
+                } else if (b[position.getX() - i][position.getY() - i].getPiece().getWhite() != white) {
+                    openMoves.add(new Coordinate(position.getX() - i, position.getY() - i));
+                    break;
+                } else if (b[position.getX() - i][position.getY() - i].getPiece().getWhite() == white) {
+                    break;
+                }
             }
         }
-        for(int i = 1; i < (Math.min(position.getX()+1,8-position.getY())); i++){
-            if(b[position.getX()-i][position.getY()+i] == null){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-            }else if(b[position.getX()+i][position.getY()+i].getPiece().getWhite() != white){
-                openC = new Coordinate(position.getX()+i,position.getY()+i);
-                openMoves.add(openC);
-                break;
+        for(int i = 1; i < 8; i++){
+            if(position.getX() + i <= 7 && position.getY() - i >= 0) {
+                if (b[position.getX() + i][position.getY() - i].getPiece() == null) {
+                    openMoves.add(new Coordinate(position.getX() + i, position.getY() - i));
+                } else if (b[position.getX() + i][position.getY() - i].getPiece().getWhite() != white) {
+                    openMoves.add(new Coordinate(position.getX() + i, position.getY() - i));
+                    break;
+                } else if (b[position.getX() + i][position.getY() - i].getPiece().getWhite() == white) {
+                    break;
+                }
+            }
+        }
+        for(int i = 1; i < 8; i++) {
+            if (position.getX() - i >= 0 && position.getY() + i <= 7) {
+                if (b[position.getX() - i][position.getY() + i].getPiece() == null) {
+                    openMoves.add(new Coordinate(position.getX() - i, position.getY() + i));
+                } else if (b[position.getX() - i][position.getY() + i].getPiece().getWhite() != white) {
+                    openMoves.add(new Coordinate(position.getX() - i, position.getY() + i));
+                    break;
+                } else if (b[position.getX() - i][position.getY() + i].getPiece().getWhite() == white) {
+                    break;
+                }
             }
         }
         return openMoves;
