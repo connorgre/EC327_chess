@@ -825,7 +825,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ArrayList<Piece> whitePieces = new ArrayList<>();
         ArrayList<Piece> blackPieces = new ArrayList<>();
         Boolean bKingAlive = false;
-        Boolean wKingAlive = true;
+        Boolean wKingAlive = false;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
                 if(board[i][j].getPiece() != null){
