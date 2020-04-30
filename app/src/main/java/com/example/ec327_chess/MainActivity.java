@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public LinearLayout gameOver;
     public LinearLayout modeSelect;
     public int mode;
+    public boolean aiIsRunning;
 
 
     //different because a clicked spot might be invalid, and it requires a valid click after
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //initializes the board by putting all the pieces where they should be.
 
     public void initializeboard() {
+            board = new Board[8][8];
+
             bKing = new King(new Coordinate(4,0),false);
             wKing = new King(new Coordinate(4,7),true);
 
@@ -336,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             firstPlayerTurn= true;
             wKingCheck = false;
             bKingCheck = false;
+            aiIsRunning = false;
             drawPieces();
 }
 
@@ -394,270 +398,271 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     if(mode != -2){
         //this sets the clickedPosition as a Coordinate object of the clicked position
         //I cant think of a better way to do this.  There might be though
-        switch (v.getId()) {
-            case R.id.R00:
-                clickedPosition = new Coordinate(0,0);
-                break;
-            case R.id.R10:
-                clickedPosition.setX(1);
-                clickedPosition.setY(0);
-                break;
-            case R.id.R20:
-                clickedPosition.setX(2);
-                clickedPosition.setY(0);
-                break;
-            case R.id.R30:
-                clickedPosition.setX(3);
-                clickedPosition.setY(0);
-                break;
-            case R.id.R40:
-                clickedPosition.setX(4);
-                clickedPosition.setY(0);
-                break;
-            case R.id.R50:
-                clickedPosition.setX(5);
-                clickedPosition.setY(0);
-                break;
-            case R.id.R60:
-                clickedPosition.setX(6);
-                clickedPosition.setY(0);
-                break;
-            case R.id.R70:
-                clickedPosition.setX(7);
-                clickedPosition.setY(0);
-                break;
 
-            case R.id.R01:
-                clickedPosition.setX(0);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R11:
-                clickedPosition.setX(1);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R21:
-                clickedPosition.setX(2);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R31:
-                clickedPosition.setX(3);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R41:
-                clickedPosition.setX(4);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R51:
-                clickedPosition.setX(5);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R61:
-                clickedPosition.setX(6);
-                clickedPosition.setY(1);
-                break;
-            case R.id.R71:
-                clickedPosition.setX(7);
-                clickedPosition.setY(1);
-                break;
+            switch (v.getId()) {
+                case R.id.R00:
+                    clickedPosition = new Coordinate(0, 0);
+                    break;
+                case R.id.R10:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(0);
+                    break;
+                case R.id.R20:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(0);
+                    break;
+                case R.id.R30:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(0);
+                    break;
+                case R.id.R40:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(0);
+                    break;
+                case R.id.R50:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(0);
+                    break;
+                case R.id.R60:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(0);
+                    break;
+                case R.id.R70:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(0);
+                    break;
 
-            case R.id.R02:
-                clickedPosition.setX(0);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R12:
-                clickedPosition.setX(1);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R22:
-                clickedPosition.setX(2);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R32:
-                clickedPosition.setX(3);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R42:
-                clickedPosition.setX(4);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R52:
-                clickedPosition.setX(5);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R62:
-                clickedPosition.setX(6);
-                clickedPosition.setY(2);
-                break;
-            case R.id.R72:
-                clickedPosition.setX(7);
-                clickedPosition.setY(2);
-                break;
+                case R.id.R01:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R11:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R21:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R31:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R41:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R51:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R61:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(1);
+                    break;
+                case R.id.R71:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(1);
+                    break;
 
-            case R.id.R03:
-                clickedPosition.setX(0);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R13:
-                clickedPosition.setX(1);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R23:
-                clickedPosition.setX(2);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R33:
-                clickedPosition.setX(3);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R43:
-                clickedPosition.setX(4);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R53:
-                clickedPosition.setX(5);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R63:
-                clickedPosition.setX(6);
-                clickedPosition.setY(3);
-                break;
-            case R.id.R73:
-                clickedPosition.setX(7);
-                clickedPosition.setY(3);
-                break;
+                case R.id.R02:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R12:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R22:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R32:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R42:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R52:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R62:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(2);
+                    break;
+                case R.id.R72:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(2);
+                    break;
 
-            case R.id.R04:
-                clickedPosition.setX(0);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R14:
-                clickedPosition.setX(1);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R24:
-                clickedPosition.setX(2);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R34:
-                clickedPosition.setX(3);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R44:
-                clickedPosition.setX(4);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R54:
-                clickedPosition.setX(5);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R64:
-                clickedPosition.setX(6);
-                clickedPosition.setY(4);
-                break;
-            case R.id.R74:
-                clickedPosition.setX(7);
-                clickedPosition.setY(4);
-                break;
+                case R.id.R03:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R13:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R23:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R33:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R43:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R53:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R63:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(3);
+                    break;
+                case R.id.R73:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(3);
+                    break;
 
-            case R.id.R05:
-                clickedPosition.setX(0);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R15:
-                clickedPosition.setX(1);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R25:
-                clickedPosition.setX(2);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R35:
-                clickedPosition.setX(3);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R45:
-                clickedPosition.setX(4);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R55:
-                clickedPosition.setX(5);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R65:
-                clickedPosition.setX(6);
-                clickedPosition.setY(5);
-                break;
-            case R.id.R75:
-                clickedPosition.setX(7);
-                clickedPosition.setY(5);
-                break;
+                case R.id.R04:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R14:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R24:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R34:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R44:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R54:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R64:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(4);
+                    break;
+                case R.id.R74:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(4);
+                    break;
 
-            case R.id.R06:
-                clickedPosition.setX(0);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R16:
-                clickedPosition.setX(1);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R26:
-                clickedPosition.setX(2);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R36:
-                clickedPosition.setX(3);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R46:
-                clickedPosition.setX(4);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R56:
-                clickedPosition.setX(5);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R66:
-                clickedPosition.setX(6);
-                clickedPosition.setY(6);
-                break;
-            case R.id.R76:
-                clickedPosition.setX(7);
-                clickedPosition.setY(6);
-                break;
+                case R.id.R05:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R15:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R25:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R35:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R45:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R55:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R65:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(5);
+                    break;
+                case R.id.R75:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(5);
+                    break;
 
-            case R.id.R07:
-                clickedPosition.setX(0);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R17:
-                clickedPosition.setX(1);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R27:
-                clickedPosition.setX(2);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R37:
-                clickedPosition.setX(3);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R47:
-                clickedPosition.setX(4);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R57:
-                clickedPosition.setX(5);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R67:
-                clickedPosition.setX(6);
-                clickedPosition.setY(7);
-                break;
-            case R.id.R77:
-                clickedPosition.setX(7);
-                clickedPosition.setY(7);
-                break;
-        }
+                case R.id.R06:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R16:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R26:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R36:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R46:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R56:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R66:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(6);
+                    break;
+                case R.id.R76:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(6);
+                    break;
+
+                case R.id.R07:
+                    clickedPosition.setX(0);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R17:
+                    clickedPosition.setX(1);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R27:
+                    clickedPosition.setX(2);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R37:
+                    clickedPosition.setX(3);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R47:
+                    clickedPosition.setX(4);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R57:
+                    clickedPosition.setX(5);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R67:
+                    clickedPosition.setX(6);
+                    clickedPosition.setY(7);
+                    break;
+                case R.id.R77:
+                    clickedPosition.setX(7);
+                    clickedPosition.setY(7);
+                    break;
+            }
 
         /////////////////////////////////////////////////////////////////////////////
         ///here is the actual implementation of the game (moving pieces and stuff)///
@@ -669,7 +674,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //but the code breaks, so the result is board[clickedPosition.getX()][clickedPosition.getY()].getPiece()
         //gets pasted alot.  not much I can do about that
 
-        if(!pieceSelected){
+        if(!pieceSelected && !aiIsRunning){
             if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece() == null){
                 return;
             }else if(board[clickedPosition.getX()][clickedPosition.getY()].getPiece().getWhite() == firstPlayerTurn){
@@ -680,7 +685,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setColorAtAllowedPosition(allowedMoves);
                 return;
             }
-        } else {
+        } else if(!aiIsRunning){
             if(mode >= 0 && !firstPlayerTurn){
                 currentPosition = engineCurrentPosition;
                 clickedPosition = engineClickedPosition;
@@ -718,16 +723,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawPieces();
 
         //implementation of the engine
-        if(mode > -1){
+        if(mode > -1 && !aiIsRunning){
             if(!firstPlayerTurn && !checkEndGame()){
+                aiIsRunning = true;
                 chess_Ai engine = new chess_Ai(mode,board);
                 engineCurrentPosition = new Coordinate(engine.getBestP(board));
                 engineClickedPosition = new Coordinate(engine.getBestMove());
+                while(board[engineCurrentPosition.getX()][engineCurrentPosition.getY()].getPiece() == null){
+                    engineCurrentPosition = new Coordinate(engine.getBestP(board));
+                    engineClickedPosition = new Coordinate(engine.getBestMove());
+                }
                 allowedMoves = board[engineCurrentPosition.getX()][engineCurrentPosition.getY()].getPiece().Moves(board);
                 while(!isMoveAllowed(allowedMoves,engineClickedPosition)){
                     engineCurrentPosition = new Coordinate(engine.getBestP(board));
                     engineClickedPosition = new Coordinate(engine.getBestMove());
+                    while(board[engineCurrentPosition.getX()][engineCurrentPosition.getY()].getPiece() == null){
+                        engineCurrentPosition = new Coordinate(engine.getBestP(board));
+                        engineClickedPosition = new Coordinate(engine.getBestMove());
+                    }
+                    allowedMoves = board[engineCurrentPosition.getX()][engineCurrentPosition.getY()].getPiece().Moves(board);
                 }
+                aiIsRunning = false;
                 pieceSelected = true;
             }
         }

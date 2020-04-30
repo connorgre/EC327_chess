@@ -53,11 +53,13 @@ public class chess_Ai {
             bestMove = new Coordinate(b[bestP.getX()][bestP.getY()].getPiece().Moves(b).get(randInt));
         } else {
             int d = level*2;
+
             minimax(b,d,-10000,10000,false);
+
+            int randInt = rand.nextInt(pair.size());
+            bestP = new Coordinate(pair.get(randInt).getP());
+            bestMove = new Coordinate(pair.get(randInt).getMove());
         }
-        int randInt = rand.nextInt(pair.size());
-        bestP = new Coordinate(pair.get(randInt).getP());
-        bestMove = new Coordinate(pair.get(randInt).getMove());
         return bestP;
     }
 
@@ -121,8 +123,10 @@ public class chess_Ai {
         return tempPieces;
     }
 
-    public int minimax(Board[][] b, int depth, int alpha, int beta, Boolean white){
+    public int minimax(Board[][] b, int depth, int a, int be, Boolean white){
         Board[][] newB = new Board[8][8];
+        int alpha = a;
+        int beta = be;
 
         if(depth == 0){
             return getTotalValue(b);
@@ -138,7 +142,7 @@ public class chess_Ai {
         }
 
         if(white){
-            ArrayList<Piece> wPieces = getBlackPieces(newB);
+            ArrayList<Piece> wPieces = getWhitePieces(newB);
             int eval;
             int maxEval = -1000;
             for(Piece p:wPieces){
